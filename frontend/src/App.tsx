@@ -61,13 +61,18 @@ function App() {
       <div className="logo">En</div>
       <h1 className="title">Whisper the film that dances in your memory</h1>
       <form onSubmit={handleSearch} className="search-container">
-        <input
-          type="text"
+        <textarea
           placeholder="Search for a movie"
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={(e) => {
+            setSearchQuery(e.target.value);
+            // Auto-adjust height
+            e.target.style.height = "auto";
+            e.target.style.height = e.target.scrollHeight + "px";
+          }}
           className="search-input"
           disabled={isLoading}
+          rows={1}
         />
         {searchQuery && (
           <button

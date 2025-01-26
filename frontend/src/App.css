@@ -56,12 +56,16 @@
 
 .search-input {
   width: 100%;
-  padding: 1rem 3rem 1rem 1.5rem;
+  padding: 1rem 5rem 1rem 1.5rem;
   font-size: 1.1rem;
   border: 1px solid #ddd;
   border-radius: 30px;
   outline: none;
   transition: all 0.3s ease;
+  resize: none;
+  overflow: hidden;
+  min-height: 3.2rem;
+  font-family: inherit;
 }
 
 .search-input:focus {
@@ -82,7 +86,7 @@
 
 .clear-button {
   position: absolute;
-  right: 45px;
+  right: 50px;
   top: 50%;
   transform: translateY(-50%);
   background: none;

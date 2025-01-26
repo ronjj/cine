@@ -5,8 +5,16 @@ import ignore
 from pydantic import BaseModel, Field
 from typing import List
 import json
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app, resources={
+    r"/*": {
+        "origins": ["http://127.0.0.1:5173", "http://localhost:5173"],  # Allow both localhost and IP
+        "methods": ["GET", "POST", "OPTIONS"],
+        "allow_headers": ["Content-Type"]
+    }
+})
 
 # Define Pydantic model for structured output
 class TitleItem(BaseModel):
@@ -25,30 +33,62 @@ def search():
     if not query:
         return jsonify({'error': 'No search query provided'}), 400
     
-    client = OpenAI(api_key=ignore.API_KEY, base_url="https://api.deepseek.com")
+    # client = OpenAI(api_key=ignore.API_KEY, base_url="https://api.deepseek.com")
     
-    try:
-        response = client.chat.completions.create(
-            model="deepseek-chat",
-            messages=[
-                {
-                    "role": "system",
-                    "content": prompts.assistant_prompt
-                },
-                {"role": "user", "content": query},
-            ],
-            response_format={"type": "json_object"},
-            stream=False
-        )
+    # try:
+    #     response = client.chat.completions.create(
+    #         model="deepseek-chat",
+    #         messages=[
+    #             {
+    #                 "role": "system",
+    #                 "content": prompts.assistant_prompt
+    #             },
+    #             {"role": "user", "content": query},
+    #         ],
+    #         response_format={"type": "json_object"},
+    #         stream=False
+    #     )
         
-        # Parse and validate the response using Pydantic
-        response_data = json.loads(response.choices[0].message.content)
-        structured_response = SearchResponse(**response_data)
+    #     # Parse and validate the response using Pydantic
+    #     response_data = json.loads(response.choices[0].message.content)
+    #     structured_response = SearchResponse(**response_data)
         
-        return jsonify(structured_response.model_dump())
-        
-    except Exception as e:
-        return jsonify({'error': 'Failed to process response', 'details': str(e)}), 500
+    #     return jsonify(structured_response.model_dump())
+
+    # except Exception as e:
+    #     return jsonify({'error': 'Failed to process response', 'details': str(e)}), 500
+
+    return jsonify({
+    "query_understood": True,
+    "results": [
+        {
+            "confidence": 0.9,
+            "description": "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.",
+            "title": "The Matrix"
+        },
+        {
+            "confidence": 0.88,
+            "description": "A wealthy New York City investment banking executive, Patrick Bateman, hides his alternate psychopathic ego from his co-workers and friends as he delves deeper into his violent, hedonistic fantasies.",
+            "title": "American Psycho"
+        },
+        {
+            "confidence": 0.85,
+            "description": "Two detectives, a rookie and a veteran, hunt a serial killer who uses the seven deadly sins as his motives.",
+            "title": "Se7en"
+        },
+        {
+            "confidence": 0.87,
+            "description": "A troubled teenager is plagued by visions of a man in a large rabbit suit who manipulates him to commit a series of crimes, after he narrowly escapes a bizarre accident.",
+            "title": "Donnie Darko"
+        },
+        {
+            "confidence": 0.89,
+            "description": "In a future British tyranny, a shadowy freedom fighter, known only by the alias of 'V', plots to overthrow it with the help of a young woman.",
+            "title": "V for Vendetta"
+        }
+    ],
+    "total_results": 5
+})
 
 if __name__ == '__main__':
     app.run(debug=True)

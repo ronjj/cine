@@ -229,3 +229,58 @@
     background: rgba(255, 107, 107, 0.1);
   }
 }
+
+.result-content {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.poster-container {
+  flex-shrink: 0;
+}
+
+.movie-poster {
+  width: 100px;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.result-text {
+  flex-grow: 1;
+}
+
+.movie-title {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.movie-title:hover {
+  color: #646cff;
+}
+
+.score-container {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.tomato-score {
+  font-size: 0.9rem;
+  color: #666;
+  background: rgba(255, 0, 0, 0.1);
+  padding: 0.2rem 0.5rem;
+  border-radius: 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .movie-title:hover {
+    color: #747bff;
+  }
+  
+  .tomato-score {
+    color: #fff;
+    background: rgba(255, 0, 0, 0.2);
+  }
+}

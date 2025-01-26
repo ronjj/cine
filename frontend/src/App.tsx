@@ -1,10 +1,17 @@
 import { useState } from "react";
 import "./App.css";
 
+interface RTData {
+  rt_link: string;
+  poster_url: string;
+  tomato_score: string;
+}
+
 interface SearchResult {
   title: string;
   description: string;
   confidence: number;
+  rt_data: RTData | null;
 }
 
 interface SearchResponse {
@@ -90,13 +97,44 @@ function App() {
         <div className="results">
           {results.map((result, index) => (
             <div key={index} className="result-item">
-              <h3>
-                {result.title}
-                <span className="confidence-score">
-                  {Math.round(result.confidence * 100)}% match
-                </span>
-              </h3>
-              <p>{result.description}</p>
+              <div className="result-content">
+                {result.rt_data?.poster_url && (
+                  <div className="poster-container">
+                    <img
+                      src={result.rt_data.poster_url}
+                      alt={`${result.title} poster`}
+                      className="movie-poster"
+                    />
+                  </div>
+                )}
+                <div className="result-text">
+                  <h3>
+                    {result.rt_data ? (
+                      <a
+                        href={result.rt_data.rt_link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="movie-title"
+                      >
+                        {result.title}
+                      </a>
+                    ) : (
+                      result.title
+                    )}
+                    <div className="score-container">
+                      <span className="confidence-score">
+                        {Math.round(result.confidence * 100)}% match
+                      </span>
+                      {result.rt_data?.tomato_score && (
+                        <span className="tomato-score">
+                          🍅 {result.rt_data.tomato_score}%
+                        </span>
+                      )}
+                    </div>
+                  </h3>
+                  <p>{result.description}</p>
+                </div>
+              </div>
             </div>
           ))}
         </div>

@@ -160,9 +160,6 @@ function App() {
                       </span>
                     )}
                     <div className="score-container">
-                      <span className="confidence-score">
-                        {Math.round(result.confidence * 100)}% match
-                      </span>
                       {result.rt_data?.tomato_score && (
                         <span className="tomato-score">
                           🍅 {result.rt_data.tomato_score}%

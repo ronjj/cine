@@ -20,6 +20,7 @@ interface SearchResponse {
   results: SearchResult[];
   query_understood: boolean;
   total_results: number;
+  bad_query: boolean;
 }
 
 function App() {
@@ -47,6 +48,10 @@ function App() {
         throw new Error("Search failed");
       }
       const data: SearchResponse = await response.json();
+      if (data.bad_query) {
+        setError("Requests must be for movies");
+        return;
+      }
       setResults(data.results);
     } catch (error) {
       console.error("Search error:", error);
@@ -58,8 +63,8 @@ function App() {
 
   return (
     <div className="app-container">
-      <div className="logo">En</div>
-      <h1 className="title">Whisper the film that dances in your memory</h1>
+      <div className="logo">Cine</div>
+      <h1 className="title">Discover what you want to watch</h1>
       <form onSubmit={handleSearch} className="search-container">
         <textarea
           placeholder="Search for a movie"

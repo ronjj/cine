@@ -37,6 +37,7 @@ class SearchResponse(BaseModel):
     results: List[TitleItem] = Field(description="List of search results")
     query_understood: bool = Field(description="Whether the search query was properly understood")
     total_results: int = Field(description="Total number of results found")
+    bad_query: bool = Field(description="Whether the query was not related to movies", default=False)
 
 def get_rt_data(movie_title: str) -> Optional[RTData]:
     try:
@@ -201,16 +202,19 @@ def search():
         return jsonify({'error': 'No search query provided'}), 400
 
     initial_results = get_llm_response(query)
-    # initial_results = ignore.test_data
     if not initial_results:
         return jsonify({'error': 'Failed to process response'}), 500
+    
+    if initial_results.bad_query:
+        return jsonify(initial_results.model_dump())
     
     enhanced_results = enhance_with_rt_data(initial_results.results)
     
     response = SearchResponse(
         results=enhanced_results,
         query_understood=initial_results.query_understood,
-        total_results=initial_results.total_results
+        total_results=initial_results.total_results,
+        bad_query=initial_results.bad_query
     )
     
     return jsonify(response.model_dump())

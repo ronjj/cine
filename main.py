@@ -139,7 +139,7 @@ def get_rt_data(movie_title: str) -> Optional[RTData]:
         print(f"Error fetching RT data for {movie_title}: {str(e)}")
         return None
 
-def get_llm_response(query: str) -> Optional[SearchResponse]:
+def get_llm_response(query: str, prompt: str) -> Optional[SearchResponse]:
     try:
         headers = {
             "Authorization": f"Bearer {ignore.API_KEY}",
@@ -151,7 +151,7 @@ def get_llm_response(query: str) -> Optional[SearchResponse]:
             "messages": [
                 {
                     "role": "system",
-                    "content": prompts.assistant_prompt
+                    "content": prompt
                 },
                 {"role": "user", "content": query}
             ],
@@ -201,7 +201,7 @@ def search():
     if not query:
         return jsonify({'error': 'No search query provided'}), 400
 
-    initial_results = get_llm_response(query)
+    initial_results = get_llm_response(query, prompts.initial_prompt)
     if not initial_results:
         return jsonify({'error': 'Failed to process response'}), 500
     
@@ -215,6 +215,38 @@ def search():
         query_understood=initial_results.query_understood,
         total_results=initial_results.total_results,
         bad_query=initial_results.bad_query
+    )
+    
+    return jsonify(response.model_dump())
+
+@app.route('/more', methods=['POST'])
+def generate_more():
+    data = request.json
+    if not data or 'query' not in data or 'previous_titles' not in data:
+        return jsonify({'error': 'Query and previous titles are required'}), 400
+        
+    query = data['query']
+    previous_titles = data['previous_titles']
+    
+    # Create a custom prompt with the previous titles
+    custom_prompt = prompts.more_results_prompt.format(
+        previous_titles=", ".join(f'"{title}"' for title in previous_titles)
+    )
+    
+    more_results = get_llm_response(query, custom_prompt)
+    if not more_results:
+        return jsonify({'error': 'Failed to process response'}), 500
+        
+    if more_results.bad_query:
+        return jsonify(more_results.model_dump())
+    
+    enhanced_results = enhance_with_rt_data(more_results.results)
+    
+    response = SearchResponse(
+        results=enhanced_results,
+        query_understood=more_results.query_understood,
+        total_results=more_results.total_results,
+        bad_query=more_results.bad_query
     )
     
     return jsonify(response.model_dump())

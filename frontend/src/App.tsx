@@ -5,6 +5,8 @@ interface RTData {
   rt_link: string;
   poster_url: string;
   tomato_score: string;
+  release_year: string | null;
+  cast: string | null;
 }
 
 interface SearchResult {
@@ -133,6 +135,12 @@ function App() {
                     </div>
                   </h3>
                   <p>{result.description}</p>
+                  {result.rt_data?.cast && (
+                    <div className="cast-info">
+                      <span className="cast-label">Cast:</span>{" "}
+                      {result.rt_data.cast}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

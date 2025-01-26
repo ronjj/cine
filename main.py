@@ -24,6 +24,8 @@ class RTData(BaseModel):
     rt_link: str = Field(description="Link to the movie on Rotten Tomatoes")
     poster_url: str = Field(description="URL of the movie poster")
     tomato_score: str = Field(description="Rotten Tomatoes score")
+    release_year: Optional[str] = Field(description="Release year of the movie", default=None)
+    cast: Optional[str] = Field(description="List of main cast members", default=None)
 
 class TitleItem(BaseModel):
     title: str = Field(description="The title of a search result")
@@ -71,6 +73,17 @@ def get_rt_data(movie_title: str) -> Optional[RTData]:
             if not title_element:
                 continue
                 
+            # Extract year from the row's attributes
+            release_year = row.get('releaseyear', '')
+            if not release_year:
+                # Try to find year in the row's content
+                year_span = row.find('span', {'data-qa': 'release-year'})
+                if year_span:
+                    release_year = year_span.text.strip('()')
+                    
+            # Extract cast from the row's attributes
+            cast = row.get('cast', '')
+                
             if title_element.text.strip().lower() == movie_title.lower():
                 # Found exact match
                 rt_link = title_element['href']
@@ -86,7 +99,9 @@ def get_rt_data(movie_title: str) -> Optional[RTData]:
                 return RTData(
                     rt_link=rt_link,
                     poster_url=poster_url,
-                    tomato_score=tomato_score
+                    tomato_score=tomato_score,
+                    release_year=release_year,
+                    cast=cast
                 )
         
         # If no exact match found, use the first result
@@ -101,10 +116,22 @@ def get_rt_data(movie_title: str) -> Optional[RTData]:
         
         tomato_score = first_row.get('tomatometerscore', 'N/A')
         
+        # Extract year from the first result
+        release_year = first_row.get('releaseyear', '')
+        if not release_year:
+            year_span = first_row.find('span', {'data-qa': 'release-year'})
+            if year_span:
+                release_year = year_span.text.strip('()')
+                
+        # Extract cast from the first result
+        cast = first_row.get('cast', '')
+        
         return RTData(
             rt_link=rt_link,
             poster_url=poster_url,
-            tomato_score=tomato_score
+            tomato_score=tomato_score,
+            release_year=release_year,
+            cast=cast
         )
             
     except Exception as e:
@@ -154,8 +181,13 @@ def enhance_with_rt_data(results: List[TitleItem]) -> List[TitleItem]:
     enhanced_results = []
     for movie in results:
         rt_data = get_rt_data(movie.title)
+        # Add release year to title if available
+        title_with_year = movie.title
+        if rt_data and rt_data.release_year:
+            title_with_year = f"{movie.title} ({rt_data.release_year})"
+            
         enhanced_results.append(TitleItem(
-            title=movie.title,
+            title=title_with_year,
             description=movie.description,
             confidence=movie.confidence,
             rt_data=rt_data

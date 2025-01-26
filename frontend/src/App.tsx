@@ -28,6 +28,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [results, setResults] = useState<SearchResult[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,7 +43,9 @@ function App() {
 
     try {
       const response = await fetch(
-        `http://127.0.0.1:5000/search?query=${encodeURIComponent(trimmedQuery)}`
+        `http://127.0.0.1:5000/search?query=${encodeURIComponent(
+          trimmedQuery
+        )}&prompt_type=initial`
       );
       if (!response.ok) {
         throw new Error("Search failed");
@@ -58,6 +61,40 @@ function App() {
       setError("Failed to fetch results. Please try again.");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleGenerateMore = async () => {
+    setError(null);
+    setIsLoadingMore(true);
+
+    try {
+      const previousTitles = results.map((result) => result.title);
+      const response = await fetch("http://127.0.0.1:5000/more", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          query: searchQuery.trim(),
+          previous_titles: previousTitles,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to generate more results");
+      }
+      const data: SearchResponse = await response.json();
+      if (data.bad_query) {
+        setError("Requests must be for movies");
+        return;
+      }
+      setResults((prevResults) => [...prevResults, ...data.results]);
+    } catch (error) {
+      console.error("Generate more error:", error);
+      setError("Failed to generate more results. Please try again.");
+    } finally {
+      setIsLoadingMore(false);
     }
   };
 
@@ -188,6 +225,20 @@ function App() {
               </div>
             </div>
           ))}
+          <button
+            className="generate-more-button"
+            onClick={handleGenerateMore}
+            disabled={isLoadingMore}
+          >
+            {isLoadingMore ? (
+              <>
+                <div className="spinner small" />
+                Generating more...
+              </>
+            ) : (
+              "Generate More"
+            )}
+          </button>
         </div>
       )}
     </div>

@@ -384,3 +384,46 @@ html, body {
     background: rgba(255, 0, 0, 0.2);
   }
 }
+
+.generate-more-button {
+  width: 100%;
+  padding: 1rem;
+  margin-top: 1rem;
+  background: #f0f0f0;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  color: #333;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.generate-more-button:hover {
+  background: #e0e0e0;
+}
+
+.generate-more-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.spinner.small {
+  width: 20px;
+  height: 20px;
+  border-width: 2px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .generate-more-button {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+  }
+  
+  .generate-more-button:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+}

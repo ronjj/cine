@@ -217,6 +217,7 @@ html, body {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  position: relative;
 }
 
 .result-item {
@@ -385,10 +386,16 @@ html, body {
   }
 }
 
+.generate-more-container {
+  width: 100%;
+  margin-top: 1rem;
+  position: relative;
+  z-index: 2;
+}
+
 .generate-more-button {
   width: 100%;
   padding: 1rem;
-  margin-top: 1rem;
   background: #f0f0f0;
   border: none;
   border-radius: 12px;
@@ -400,6 +407,8 @@ html, body {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  position: relative;
+  z-index: 1;
 }
 
 .generate-more-button:hover {

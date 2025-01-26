@@ -225,20 +225,22 @@ function App() {
               </div>
             </div>
           ))}
-          <button
-            className="generate-more-button"
-            onClick={handleGenerateMore}
-            disabled={isLoadingMore}
-          >
-            {isLoadingMore ? (
-              <>
-                <div className="spinner small" />
-                Generating more...
-              </>
-            ) : (
-              "Generate More"
-            )}
-          </button>
+          <div className="generate-more-container">
+            <button
+              className="generate-more-button"
+              onClick={handleGenerateMore}
+              disabled={isLoadingMore}
+            >
+              {isLoadingMore ? (
+                <>
+                  <div className="spinner small" />
+                  Generating more...
+                </>
+              ) : (
+                "Generate More"
+              )}
+            </button>
+          </div>
         </div>
       )}
     </div>

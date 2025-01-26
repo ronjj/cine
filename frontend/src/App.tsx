@@ -112,6 +112,12 @@ function App() {
             e.target.style.height = "auto";
             e.target.style.height = e.target.scrollHeight + "px";
           }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              e.preventDefault();
+              handleSearch(e);
+            }
+          }}
           className="search-input"
           disabled={isLoading}
           rows={1}

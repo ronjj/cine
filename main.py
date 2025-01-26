@@ -184,7 +184,7 @@ def enhance_with_rt_data(results: List[TitleItem]) -> List[TitleItem]:
         # Add release year to title if available
         title_with_year = movie.title
         if rt_data and rt_data.release_year:
-            title_with_year = f"{movie.title} ({rt_data.release_year})"
+            title_with_year = f"{movie.title}"
             
         enhanced_results.append(TitleItem(
             title=title_with_year,

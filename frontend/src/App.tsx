@@ -4,7 +4,7 @@ import "./App.css";
 interface RTData {
   rt_link: string;
   poster_url: string;
-  tomato_score: string;
+  tomato_score: string | null;
   release_year: string | null;
   cast: string | null;
 }
@@ -119,9 +119,23 @@ function App() {
                         className="movie-title"
                       >
                         {result.title}
+                        {result.rt_data && (
+                          <span className="release-year">
+                            {result.rt_data.release_year &&
+                              ` (${result.rt_data.release_year})`}
+                          </span>
+                        )}
                       </a>
                     ) : (
-                      result.title
+                      <span className="movie-title">
+                        {result.title}
+                        {result.rt_data && (
+                          <span className="release-year">
+                            {result.rt_data.release_year &&
+                              ` (${result.rt_data.release_year})`}
+                          </span>
+                        )}
+                      </span>
                     )}
                     <div className="score-container">
                       <span className="confidence-score">
@@ -138,7 +152,7 @@ function App() {
                   {result.rt_data?.cast && (
                     <div className="cast-info">
                       <span className="cast-label">Cast:</span>{" "}
-                      {result.rt_data.cast}
+                      {result.rt_data.cast.split(",").join(", ")}
                     </div>
                   )}
                 </div>

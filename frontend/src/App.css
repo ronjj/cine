@@ -276,6 +276,11 @@
   color: inherit;
   text-decoration: none;
   transition: color 0.2s ease;
+  font-weight: bold;
+}
+
+.release-year {
+  font-weight: normal;
 }
 
 .movie-title:hover {

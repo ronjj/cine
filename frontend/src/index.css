@@ -22,7 +22,7 @@
 body {
   margin: 0;
   display: flex;
-  place-items: center;
+  flex-direction: column;
   min-width: 320px;
   min-height: 100vh;
 }
@@ -70,4 +70,22 @@ button:focus-visible {
   .search-button:hover svg {
     color: #fff;
   }
+  .search-container {
+    background-color: #242424;
+  }
+}
+
+.search-container {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: #f8f8f8;
+  padding: 2rem;
+  width: 100%;
+}
+
+.results-container {
+  margin-top: 1rem;
+  padding: 1rem;
+  width: 100%;
 }

@@ -100,42 +100,59 @@ function App() {
 
   return (
     <div className="app-container">
-      <div className="logo">Cine</div>
-      <h1 className="title">Discover what you want to watch</h1>
-      <form onSubmit={handleSearch} className="search-container">
-        <textarea
-          placeholder="Search for a movie"
-          value={searchQuery}
-          onChange={(e) => {
-            setSearchQuery(e.target.value);
-            // Auto-adjust height
-            e.target.style.height = "auto";
-            e.target.style.height = e.target.scrollHeight + "px";
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              handleSearch(e);
-            }
-          }}
-          className="search-input"
-          disabled={isLoading}
-          rows={1}
-        />
-        {searchQuery && (
-          <button
-            type="button"
-            className="clear-button"
-            onClick={() => setSearchQuery("")}
+      <div className="search-section">
+        <div className="logo">Cine</div>
+        <h1 className="title">Discover what you want to watch</h1>
+        <form onSubmit={handleSearch} className="search-container">
+          <textarea
+            placeholder="Search for a movie"
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              // Auto-adjust height
+              e.target.style.height = "auto";
+              e.target.style.height = e.target.scrollHeight + "px";
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleSearch(e);
+              }
+            }}
+            className="search-input"
             disabled={isLoading}
-          >
+            rows={1}
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              className="clear-button"
+              onClick={() => setSearchQuery("")}
+              disabled={isLoading}
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M6 18L18 6M6 6l12 12"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+          )}
+          <button type="submit" className="search-button" disabled={isLoading}>
             <svg
               viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="M6 18L18 6M6 6l12 12"
+                d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z"
                 stroke="currentColor"
                 strokeWidth="2"
                 strokeLinecap="round"
@@ -143,23 +160,8 @@ function App() {
               />
             </svg>
           </button>
-        )}
-        <button type="submit" className="search-button" disabled={isLoading}>
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M21 21L15 15M17 10C17 13.866 13.866 17 10 17C6.13401 17 3 13.866 3 10C3 6.13401 6.13401 3 10 3C13.866 3 17 6.13401 17 10Z"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </button>
-      </form>
+        </form>
+      </div>
 
       {isLoading && (
         <div className="loading">
